@@ -1,21 +1,24 @@
 import React from 'react'
 import { TextField, Button, Typography, Container, Box } from '@mui/material'
 
-interface AuthFormProps {
+interface RegistrationFormProps {
     email: string
     setEmail: React.Dispatch<React.SetStateAction<string>>
     password: string
     setPassword: React.Dispatch<React.SetStateAction<string>>
+    username: string
+    setUsername: React.Dispatch<React.SetStateAction<string>>
     error: string
-    handleLogin: () => void
+    handleRegistration: () => void
+    switchToLogin: () => void
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassword, error, handleLogin }) => {
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ email, setEmail, password, setPassword, username, setUsername, error, handleRegistration, switchToLogin }) => {
     return (
         <Container maxWidth="sm">
             <Box mt={8}>
                 <Typography variant="h4" gutterBottom>
-                    Авторизация
+                    Регистрация
                 </Typography>
                 <TextField
                     label="Email"
@@ -33,13 +36,26 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                <TextField
+                    label="Имя пользователя"
+                    type="text"
+                    fullWidth
+                    margin="normal"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
                 {error && (
                     <Typography color="error" variant="body2">
                         {error}
                     </Typography>
                 )}
                 <Box mt={2}>
-                    <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
+                    <Button variant="contained" color="primary" fullWidth onClick={handleRegistration}>
+                        Зарегистрироваться
+                    </Button>
+                </Box>
+                <Box mt={2}>
+                    <Button variant="text" color="primary" fullWidth onClick={switchToLogin}>
                         Войти
                     </Button>
                 </Box>
@@ -48,4 +64,4 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
     )
 }
 
-export default AuthForm
+export default RegistrationForm
