@@ -6,6 +6,8 @@ interface RegistrationFormProps {
     setEmail: React.Dispatch<React.SetStateAction<string>>
     password: string
     setPassword: React.Dispatch<React.SetStateAction<string>>
+    confirmPassword: string
+    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
     username: string
     setUsername: React.Dispatch<React.SetStateAction<string>>
     error: string
@@ -13,7 +15,7 @@ interface RegistrationFormProps {
     switchToLogin: () => void
 }
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ email, setEmail, password, setPassword, username, setUsername, error, handleRegistration, switchToLogin }) => {
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ email, setEmail, password, setPassword, confirmPassword, setConfirmPassword, username, setUsername, error, handleRegistration, switchToLogin }) => {
     return (
         <Container maxWidth="sm">
             <Box mt={8}>
@@ -29,6 +31,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ email, setEmail, pa
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
+                    label="Имя пользователя"
+                    type="text"
+                    fullWidth
+                    margin="normal"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
                     label="Пароль"
                     type="password"
                     fullWidth
@@ -37,12 +47,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ email, setEmail, pa
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <TextField
-                    label="Имя пользователя"
-                    type="text"
+                    label="Повторите пароль"
+                    type="password"
                     fullWidth
                     margin="normal"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 {error && (
                     <Typography color="error" variant="body2">
