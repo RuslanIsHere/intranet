@@ -39,7 +39,7 @@ const AuthPage: React.FC = () => {
             return
         }
 
-        console.log('✅ Logged in')
+        console.log('Logged in')
 
         // Подстраховка — получаем session, убеждаемся что всё ок
         const {
@@ -62,11 +62,18 @@ const AuthPage: React.FC = () => {
         setError('')
         if (password !== confirmPassword) {
             setError('Пароли не совпадают')
+            setLoading(false)
             return
         }
 
         try {
-            const { data: { user }, error } = await supabase.auth.signUp({ email, password })
+            const {
+                data: { user },
+                error,
+            } = await supabase.auth.signUp({
+                email,
+                password,
+            })
 
             if (error) {
                 if (error.message.includes('already registered')) {
@@ -74,20 +81,29 @@ const AuthPage: React.FC = () => {
                 } else {
                     setError('Ошибка при регистрации: ' + error.message)
                 }
+                setLoading(false)
                 return
             }
 
             if (user) {
                 const { error: profileError } = await supabase
                     .from('profiles')
-                    .insert([{ user_id: user.id, username }])
+                    .insert([
+                        {
+                            id: user.id,
+                            email: user.email,
+                            full_name: username, // 👈 сюда имя
+                            roles: ['user'],
+                            avatar_url: null,
+                        },
+                    ])
 
                 if (profileError) {
                     console.error('Ошибка при сохранении профиля:', profileError)
-                    setError('Регистрация прошла, но не удалось сохранить имя пользователя.')
+                    setError('Регистрация прошла, но не удалось сохранить профиль.')
                 } else {
-                    router.push('/') // или куда тебе нужно
-                    console.log('User registered and profile saved successfully')
+                    console.log('✅ Профиль сохранён')
+                    window.location.href = '/' // или router.push('/')
                 }
             }
         } catch (err) {
@@ -97,6 +113,7 @@ const AuthPage: React.FC = () => {
             setLoading(false)
         }
     }
+
 
     return (
         <>

@@ -1,10 +1,13 @@
 'use client';
 
 import { Container, Typography, Button, Box } from '@mui/material';
+import Header from '@/components/header/header';
 
 export default function Home() {
   return (
-      <Container maxWidth="sm" sx={{ mt: 8 }}>
+      <>
+          <Header />
+    <Container maxWidth="sm" sx={{ mt: 8 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           Welcome!
         </Typography>
@@ -17,5 +20,6 @@ export default function Home() {
           </Button>
         </Box>
       </Container>
+      </>
   );
 }
