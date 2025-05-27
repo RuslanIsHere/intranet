@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
-    console.log('🛂 Middleware: запущен для:', request.nextUrl.pathname)
+    console.log('Middleware: start:', request.nextUrl.pathname)
 
     let supabaseResponse = NextResponse.next({ request })
 
@@ -29,15 +29,11 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    const {
-        data: { user },
-        error,
-    } = await supabase.auth.getUser()
+    const {data: { user }, error} = await supabase.auth.getUser()
 
-    if (error) console.error('Ошибка получения пользователя:', error)
+    if (error) console.error('Error getting user:', error)
 
-    if (
-        !user &&
+    if (!user &&
         !request.nextUrl.pathname.startsWith('/login') &&
         !request.nextUrl.pathname.startsWith('/auth')
     ) {

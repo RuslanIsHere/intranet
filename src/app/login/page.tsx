@@ -102,7 +102,7 @@ const AuthPage: React.FC = () => {
                     console.error('Ошибка при сохранении профиля:', profileError)
                     setError('Регистрация прошла, но не удалось сохранить профиль.')
                 } else {
-                    console.log('✅ Профиль сохранён')
+                    console.log('Профиль сохранён')
                     window.location.href = '/' // или router.push('/')
                 }
             }

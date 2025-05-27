@@ -1,0 +1,10 @@
+export const HEADER = {
+    H_MOBILE: 64,
+    H_DASHBOARD_DESKTOP: 80,
+    H_DASHBOARD_DESKTOP_OFFSET: 56,
+}
+
+export const NAV = {
+    W_DASHBOARD: 280,
+    W_DASHBOARD_MINI: 88,
+}
