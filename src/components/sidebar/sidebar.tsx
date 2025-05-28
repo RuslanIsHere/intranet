@@ -1,35 +1,51 @@
-'use client'
+'use client';
 
-import {Drawer, List, ListItem, ListItemButton, ListItemText, ListItemIcon, Toolbar, IconButton, useTheme, useMediaQuery, Box,} from '@mui/material'
-import { ChevronLeft, ChevronRight } from '@mui/icons-material'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import PeopleIcon from '@mui/icons-material/People'
-import WorkIcon from '@mui/icons-material/Work'
-import Link from 'next/link'
-import {usePathname} from "next/navigation";
+import {
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    ListItemIcon,
+    Toolbar,
+    IconButton,
+    useTheme,
+    useMediaQuery,
+    Box,
+} from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PeopleIcon from '@mui/icons-material/People';
+import WorkIcon from '@mui/icons-material/Work';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const navItems = [
     { text: 'Dashboard', href: '/', icon: <DashboardIcon /> },
     { text: 'RH', href: '/rh', icon: <PeopleIcon /> },
     { text: 'Projects', href: '/projects', icon: <WorkIcon /> },
-]
+];
 
-export default function Sidebar({mobileOpen, onClose, collapsed, onCollapseChange,}: {
-    mobileOpen: boolean
-    onClose: () => void
-    collapsed: boolean
-    onCollapseChange?: (collapsed: boolean) => void
+export default function Sidebar({
+                                    mobileOpen,
+                                    onCloseAction,
+                                    collapsed,
+                                    onCollapseChange,
+                                }: {
+    mobileOpen: boolean;
+    onCloseAction: () => void;
+    collapsed: boolean;
+    onCollapseChange?: (collapsed: boolean) => void;
 }) {
-    const theme = useTheme()
-    const pathname = usePathname()
-    console.log(pathname)
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const theme = useTheme();
+    const pathname = usePathname();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const drawerWidth = collapsed ? 60 : 240
+    const drawerWidth = collapsed ? 60 : 240;
 
     const handleCollapse = () => {
-        onCollapseChange?.(!collapsed)
-    }
+        onCollapseChange?.(!collapsed);
+    };
 
     const drawerContent = (
         <>
@@ -78,8 +94,8 @@ export default function Sidebar({mobileOpen, onClose, collapsed, onCollapseChang
                         <ListItemButton
                             component={Link}
                             href={href}
-                            selected={pathname === href} // ✅ будет подсвечен
-                            onClick={isMobile ? onClose : undefined}
+                            selected={pathname === href}
+                            onClick={isMobile ? onCloseAction : undefined}
                             sx={{
                                 justifyContent: collapsed ? 'center' : 'flex-start',
                                 px: 2,
@@ -94,13 +110,13 @@ export default function Sidebar({mobileOpen, onClose, collapsed, onCollapseChang
                 ))}
             </List>
         </>
-    )
+    );
 
     return isMobile ? (
         <Drawer
             variant="temporary"
             open={mobileOpen}
-            onClose={onClose}
+            onClose={onCloseAction}
             ModalProps={{ keepMounted: true }}
             sx={{ '& .MuiDrawer-paper': { width: 240 } }}
         >
@@ -122,5 +138,5 @@ export default function Sidebar({mobileOpen, onClose, collapsed, onCollapseChang
         >
             {drawerContent}
         </Drawer>
-    )
+    );
 }

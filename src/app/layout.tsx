@@ -98,7 +98,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                             <Box sx={{ gridArea: 'sidebar' }}>
                                 <Sidebar
                                     mobileOpen={mobileOpen}
-                                    onClose={() => setMobileOpen(false)}
+                                    onCloseAction={() => setMobileOpen(false)}
                                     collapsed={collapsed}
                                     onCollapseChange={handleCollapseChange}
                                 />
