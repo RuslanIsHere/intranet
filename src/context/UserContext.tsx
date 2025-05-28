@@ -2,17 +2,11 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { getUserProfile } from '@/utils/hooks/getUserProfile'
+import type { Profile } from '@/types/database'; // Укажи верный путь
 
-type UserProfile = {
-    id: string
-    full_name: string
-    email?: string
-    avatar_url?: string
-    [key: string]: any
-}
 
 type UserContextType = {
-    profile: UserProfile | null
+    profile: Profile | null
     loading: boolean
 }
 
@@ -26,7 +20,7 @@ export function useUserContext() {
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-    const [profile, setProfile] = useState<UserProfile | null>(null)
+    const [profile, setProfile] = useState<Profile | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -35,6 +29,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             const data = await getUserProfile()
             setProfile(data)
             setLoading(false)
+            console.log("user context", data)
+
         }
         fetch()
     }, [])

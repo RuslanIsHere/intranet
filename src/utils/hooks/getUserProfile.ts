@@ -1,7 +1,11 @@
 import { supabase } from '@/utils/supabase/client'
+import type { Profile } from '@/types/database'
 
-export async function getUserProfile() {
-    const {data: { user }, error,} = await supabase.auth.getUser()
+export async function getUserProfile(): Promise<Profile | null> {
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser()
 
     if (error || !user) {
         console.error('Not authorized:', error)
@@ -12,7 +16,7 @@ export async function getUserProfile() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single()
+        .single<Profile>()
 
     if (profileError || !profile) {
         console.error('Error fetching profile:', profileError)

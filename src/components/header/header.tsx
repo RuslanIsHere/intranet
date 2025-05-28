@@ -4,7 +4,7 @@ import {AppBar, Toolbar, IconButton, Stack, Avatar, Menu, MenuItem, useTheme, Bo
 import { Brightness4, Brightness7, Menu as MenuIcon } from '@mui/icons-material'
 import { useDevice } from '@/utils/hooks/useDevice'
 import { useColorMode } from '@/components/ThemeProvider'
-import { HEADER, NAV } from '@/config/global'
+import { HEADER } from '@/config/global'
 import { useState } from 'react'
 import { supabase } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'

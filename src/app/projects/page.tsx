@@ -4,13 +4,14 @@ import { useProjects } from '@/utils/hooks/useProjects'
 import ProjectCard from '@/components/projects/ProjectCard'
 import ProjectModal from '@/components/projects/ProjectModal'
 import { supabase } from '@/utils/supabase/client'
-import {Alert, Box, Snackbar} from '@mui/material'
-import { useState } from 'react'
-
+import { Alert, Box, Snackbar } from '@mui/material'
+import { useState, useEffect } from 'react'
+import type { Project } from '@/types/database'
 
 export default function ProjectsPage() {
-    const { projects, error } = useProjects()
-    const [selectedProject, setSelectedProject] = useState<any | null>(null)
+    const { projects: fetchedProjects, error } = useProjects()
+    const [projects, setProjects] = useState<Project[]>([])
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null)
     const [modalOpen, setModalOpen] = useState(false)
     const [snackbar, setSnackbar] = useState({
         open: false,
@@ -18,9 +19,12 @@ export default function ProjectsPage() {
         severity: 'success' as 'success' | 'error',
     })
 
+    // При загрузке или обновлении fetchedProjects обновляем локальный state
+    useEffect(() => {
+        setProjects(fetchedProjects)
+    }, [fetchedProjects])
 
-
-    const handleOpenModal = (project: any) => {
+    const handleOpenModal = (project: Project) => {
         setSelectedProject(project)
         setModalOpen(true)
     }
@@ -30,7 +34,7 @@ export default function ProjectsPage() {
         setSelectedProject(null)
     }
 
-    const handleSaveProject = async (updated: any) => {
+    const handleSaveProject = async (updated: Project) => {
         const { id, nom, budget_prevu, status } = updated
 
         const { error } = await supabase
@@ -43,6 +47,10 @@ export default function ProjectsPage() {
             setSnackbar({ open: true, message: 'Erreur lors de la mise à jour', severity: 'error' })
         } else {
             setSnackbar({ open: true, message: 'Projet mis à jour avec succès', severity: 'success' })
+            // Локально обновляем проекты
+            setProjects((prev) =>
+                prev.map((p) => (p.id === id ? { ...p, nom, budget_prevu, status } : p))
+            )
         }
 
         setModalOpen(false)
@@ -50,7 +58,6 @@ export default function ProjectsPage() {
 
     return (
         <Box sx={{ px: { xs: 2, sm: 4 }, py: 4, maxWidth: '100%', mx: 'auto' }}>
-
             {error && <Alert severity="error">Erreur: {error.message}</Alert>}
 
             <Box
@@ -82,6 +89,7 @@ export default function ProjectsPage() {
                 project={selectedProject}
                 onSave={handleSaveProject}
             />
+
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={3000}
@@ -96,7 +104,6 @@ export default function ProjectsPage() {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
-
         </Box>
     )
 }
