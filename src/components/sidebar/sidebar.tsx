@@ -1,63 +1,94 @@
 'use client'
 
-import {
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText,
-    Toolbar,
-    IconButton,
-    useTheme,
-    useMediaQuery,
-    Box,
-} from '@mui/material'
+import {Drawer, List, ListItem, ListItemButton, ListItemText, ListItemIcon, Toolbar, IconButton, useTheme, useMediaQuery, Box,} from '@mui/material'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import PeopleIcon from '@mui/icons-material/People'
+import WorkIcon from '@mui/icons-material/Work'
 import Link from 'next/link'
-import { useState } from 'react'
+import {usePathname} from "next/navigation";
 
 const navItems = [
-    { text: 'Dashboard', href: '/' },
-    { text: 'RH', href: '/rh' },
-    { text: 'Projects', href: '/projects' },
+    { text: 'Dashboard', href: '/', icon: <DashboardIcon /> },
+    { text: 'RH', href: '/rh', icon: <PeopleIcon /> },
+    { text: 'Projects', href: '/projects', icon: <WorkIcon /> },
 ]
 
-export default function Sidebar({ mobileOpen, onClose, onCollapseChange }: {
+export default function Sidebar({mobileOpen, onClose, collapsed, onCollapseChange,}: {
     mobileOpen: boolean
     onClose: () => void
+    collapsed: boolean
     onCollapseChange?: (collapsed: boolean) => void
 }) {
     const theme = useTheme()
+    const pathname = usePathname()
+    console.log(pathname)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-    const [collapsed, setCollapsed] = useState(false)
 
     const drawerWidth = collapsed ? 60 : 240
 
     const handleCollapse = () => {
-        const newValue = !collapsed
-        setCollapsed(newValue)
-        onCollapseChange?.(newValue)
+        onCollapseChange?.(!collapsed)
     }
 
     const drawerContent = (
         <>
-            <Toolbar sx={{ justifyContent: 'flex-end' }}>
+            <Toolbar
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: collapsed ? 'center' : 'space-between',
+                    px: 2,
+                    py: 1.5,
+                    minHeight: 'auto',
+                }}
+            >
+                {!collapsed && (
+                    <Box
+                        component="img"
+                        src="/logo.svg"
+                        alt="Logo"
+                        sx={{
+                            height: 60,
+                            width: 130,
+                            objectFit: 'contain',
+                            transition: '0.3s',
+                        }}
+                    />
+                )}
+
                 {!isMobile && (
-                    <IconButton onClick={handleCollapse}>
+                    <IconButton
+                        onClick={handleCollapse}
+                        size="small"
+                        sx={{ ml: collapsed ? 0 : 1 }}
+                    >
                         {collapsed ? <ChevronRight /> : <ChevronLeft />}
                     </IconButton>
                 )}
             </Toolbar>
+
             <List>
-                {navItems.map(({ text, href }) => (
-                    <ListItem key={text} disablePadding sx={{ justifyContent: collapsed ? 'center' : 'flex-start' }}>
+                {navItems.map(({ text, href, icon }) => (
+                    <ListItem
+                        key={text}
+                        disablePadding
+                        sx={{ justifyContent: collapsed ? 'center' : 'flex-start' }}
+                    >
                         <ListItemButton
                             component={Link}
                             href={href}
+                            selected={pathname === href} // ✅ будет подсвечен
                             onClick={isMobile ? onClose : undefined}
-                            sx={{ justifyContent: collapsed ? 'center' : 'flex-start' }}
+                            sx={{
+                                justifyContent: collapsed ? 'center' : 'flex-start',
+                                px: 2,
+                            }}
                         >
-                            <ListItemText primary={collapsed ? '' : text} />
+                            <ListItemIcon sx={{ minWidth: 0, mr: collapsed ? 0 : 2 }}>
+                                {icon}
+                            </ListItemIcon>
+                            {!collapsed && <ListItemText primary={text} />}
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -71,11 +102,7 @@ export default function Sidebar({ mobileOpen, onClose, onCollapseChange }: {
             open={mobileOpen}
             onClose={onClose}
             ModalProps={{ keepMounted: true }}
-            sx={{
-                '& .MuiDrawer-paper': {
-                    width: 240,
-                },
-            }}
+            sx={{ '& .MuiDrawer-paper': { width: 240 } }}
         >
             {drawerContent}
         </Drawer>
