@@ -31,3 +31,11 @@ export interface Profile {
     created_at: string
     updated_at: string
 }
+
+export interface RHArticle {
+    id: number
+    title: string
+    content: string
+    added_by: string
+    created_at: string
+}
