@@ -7,9 +7,12 @@ import {
     Typography,
     Card,
     CardContent,
-    Skeleton,
     Stack,
     IconButton,
+    Dialog,
+    DialogTitle,
+    DialogActions,
+    Button,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import dayjs from 'dayjs'
@@ -21,9 +24,14 @@ interface ArticleWithAuthor extends RHArticle {
     } | null
 }
 
+type RawArticle = RHArticle & {
+    profiles: { full_name: string | null }[] | null
+}
+
 export default function RHList() {
     const [articles, setArticles] = useState<ArticleWithAuthor[]>([])
-    const [loading, setLoading] = useState(true)
+    const [openDialog, setOpenDialog] = useState(false)
+    const [articleToDelete, setArticleToDelete] = useState<ArticleWithAuthor | null>(null)
 
     const fetchArticles = async () => {
         const { data, error } = await supabase
@@ -43,76 +51,94 @@ export default function RHList() {
         if (error) {
             console.error('Erreur chargement RH:', error)
         } else {
-            const normalized = (data as any[]).map((item): ArticleWithAuthor => ({
+            const normalized = (data as RawArticle[]).map((item): ArticleWithAuthor => ({
                 ...item,
                 profiles: Array.isArray(item.profiles) ? item.profiles[0] || null : item.profiles,
             }))
             setArticles(normalized)
         }
-
-        setLoading(false)
     }
 
     useEffect(() => {
         fetchArticles()
     }, [])
 
-    const handleDelete = async (id: number) => {
-        const confirmDelete = confirm('Êtes-vous sûr de vouloir supprimer cet article ?')
-        if (!confirmDelete) return
+    const handleDialogOpen = (article: ArticleWithAuthor) => {
+        setArticleToDelete(article)
+        setOpenDialog(true)
+    }
 
-        const { error } = await supabase.from('rh').delete().eq('id', id)
+    const handleDialogClose = () => {
+        setOpenDialog(false)
+        setArticleToDelete(null)
+    }
+
+    const confirmDelete = async () => {
+        if (!articleToDelete) return
+
+        const { error } = await supabase.from('rh').delete().eq('id', articleToDelete.id)
         if (error) {
             console.error('Erreur suppression:', error)
         } else {
-            setArticles(prev => prev.filter(item => item.id !== id))
+            setArticles(prev => prev.filter(item => item.id !== articleToDelete.id))
         }
+
+        handleDialogClose()
     }
 
     return (
-        <Box display="flex" flexDirection="column" gap={2}>
-            {loading &&
-                Array.from({ length: 2 }).map((_, i) => (
-                    <Skeleton key={i} variant="rectangular" height={140} />
-                ))}
+        <>
+            <Box display="flex" flexDirection="column" gap={2}>
+                {articles.map((item) => (
+                    <Card key={item.id} variant="outlined">
+                        <CardContent>
+                            <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                                    {item.title}
+                                </Typography>
+                                <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => handleDialogOpen(item)}
+                                    title="Supprimer l’article"
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            </Box>
 
-            {articles.map((item) => (
-                <Card key={item.id} variant="outlined">
-                    <CardContent>
-                        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                            <Typography variant="h6" fontWeight="bold" gutterBottom>
-                                {item.title}
-                            </Typography>
-                            <IconButton
-                                size="small"
-                                color="error"
-                                onClick={() => handleDelete(item.id)}
-                                title="Supprimer l’article"
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                mb={2}
+                                sx={{ color: 'text.secondary', fontSize: 13 }}
                             >
-                                <DeleteIcon fontSize="small" />
-                            </IconButton>
-                        </Box>
+                                <span>{dayjs(item.created_at).format('DD MMM YYYY, HH:mm')}</span>
+                                <span>
+                                    {item.profiles?.full_name
+                                        ? `Ajouté par ${item.profiles.full_name}`
+                                        : ''}
+                                </span>
+                            </Stack>
 
-                        <Stack
-                            direction="row"
-                            spacing={2}
-                            mb={2}
-                            sx={{ color: 'text.secondary', fontSize: 13 }}
-                        >
-                            <span>{dayjs(item.created_at).format('DD MMM YYYY, HH:mm')}</span>
-                            <span>
-                                {item.profiles?.full_name
-                                    ? `Ajouté par ${item.profiles.full_name}`
-                                    : ''}
-                            </span>
-                        </Stack>
+                            <Typography variant="body2" whiteSpace="pre-line">
+                                {item.content}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
+            </Box>
 
-                        <Typography variant="body2" whiteSpace="pre-line">
-                            {item.content}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            ))}
-        </Box>
+            <Dialog open={openDialog} onClose={handleDialogClose}>
+                <DialogTitle>
+                    Supprimer cet article ?
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Annuler</Button>
+                    <Button onClick={confirmDelete} color="error" variant="contained">
+                        Supprimer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     )
 }

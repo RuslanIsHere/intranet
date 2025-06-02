@@ -1,0 +1,2 @@
+ALTER TABLE rh
+    ADD COLUMN created_at TIMESTAMP DEFAULT now();

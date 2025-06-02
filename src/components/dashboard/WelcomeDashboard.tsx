@@ -13,6 +13,7 @@ export default function DashboardWelcome() {
                 borderRadius: 3,
                 overflow: 'hidden',
                 height: { xs: 280, md: 360 },
+                minHeight: 500,
                 backgroundImage: 'url(/cover-dashboard.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -35,7 +36,7 @@ export default function DashboardWelcome() {
                     Bienvenue dans votre espace personnel. Vous trouverez ici toutes les informations liées à votre activité au sein de l’entreprise.
                 </Typography>
                 <Typography variant="body2" color="white">
-                    N'hésitez pas à explorer les différentes sections du portail pour découvrir l’ensemble des fonctionnalités disponibles.
+                    N&aposhésitez pas à explorer les différentes sections du portail pour découvrir l’ensemble des fonctionnalités disponibles.
                 </Typography>
             </Container>
         </Box>
