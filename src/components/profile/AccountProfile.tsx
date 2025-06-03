@@ -8,7 +8,7 @@ import {
     Typography,
     Stack,
     Paper,
-    Divider
+    Divider, Avatar
 } from '@mui/material'
 import { useUserContext } from '@/context/UserContext'
 import { supabase } from '@/utils/supabase/client'
@@ -19,7 +19,6 @@ export default function AccountProfile() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<string | null>(null)
 
-    // Подтягиваем телефон из профиля
     useEffect(() => {
         if (profile?.telephone) {
             setTelephone(profile.telephone)
@@ -58,10 +57,16 @@ export default function AccountProfile() {
     return (
         <Box maxWidth="md" mx="auto" mt={6}>
             <Paper elevation={3} sx={{ p: 4 }}>
-                <Typography variant="h5" gutterBottom>
-                    Mon profil
-                </Typography>
-
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                    <Typography variant="h5" gutterBottom>
+                        Mon profil
+                    </Typography>
+                    <Avatar
+                        alt="Remy Sharp"
+                        src="avatar.jpg"
+                        sx={{ width: 150, height: 150, border: 'black' }}
+                    />
+                </Box>
                 {profile.roles && (
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                         Rôles : {profile.roles.join(', ')}
