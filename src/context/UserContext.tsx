@@ -8,6 +8,7 @@ import type { Profile } from '@/types/database'; // Укажи верный пу
 type UserContextType = {
     profile: Profile | null
     loading: boolean
+    setProfile?: React.Dispatch<React.SetStateAction<Profile | null>>
 }
 
 const UserContext = createContext<UserContextType>({
@@ -36,8 +37,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     return (
-        <UserContext.Provider value={{ profile, loading }}>
+        <UserContext.Provider value={{ profile, loading, setProfile }}>
             {children}
         </UserContext.Provider>
+
     )
 }

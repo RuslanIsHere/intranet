@@ -6,7 +6,6 @@ import {
     Typography,
     Box,
     Chip,
-    Stack,
     IconButton,
     Dialog,
     DialogTitle,
@@ -15,21 +14,20 @@ import {
     Button,
 } from '@mui/material'
 import { grey, blue, green, orange } from '@mui/material/colors'
-import BusinessIcon from '@mui/icons-material/Business'
-import EuroIcon from '@mui/icons-material/Euro'
+
 import ArchiveIcon from '@mui/icons-material/Archive'
 import DoneIcon from '@mui/icons-material/Done'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useState } from 'react'
+import type { Project } from '@/types/database'
+import { useTheme } from '@mui/material/styles'
+
 
 interface ProjectCardProps {
-    project: {
-        id: number
-        nom: string | null
-        status: string
-        budget_prevu: number | null
+    project: Project & {
         clients?: { nom: string | null } | null
         business_units?: { nom: string | null } | null
+        capitaine?: string | null
     }
     onClick?: () => void
     onDelete?: () => void
@@ -40,13 +38,14 @@ const buColors: Record<string, string> = {
     'Immobilier': blue[500],
     'Architecture': green[400],
     'Design & Build': orange[400],
-    'Transverse': grey[400],
+    'Transverse': grey[500],
 }
 
 export default function ProjectCard({ project, onClick, onDelete, showDelete }: ProjectCardProps) {
+    const theme = useTheme()
     const isArchived = project.status === 'archived'
     const bu = project.business_units?.nom || 'Transverse'
-    const borderColor = buColors[bu] || grey[400]
+    const borderColor = buColors[bu] || grey[500]
 
     const [confirmOpen, setConfirmOpen] = useState(false)
 
@@ -74,7 +73,12 @@ export default function ProjectCard({ project, onClick, onDelete, showDelete }: 
                 transition: '0.3s',
                 borderLeft: `6px solid ${borderColor}`,
                 borderRadius: 2,
-                backgroundColor: isArchived ? grey[100] : 'background.paper',
+                backgroundColor: isArchived
+                    ? theme.palette.mode === 'dark'
+                        ? grey[900]
+                        : grey[100]
+                    : theme.palette.background.paper,
+                color: isArchived ? grey[500] : 'inherit',
                 '&:hover': {
                     boxShadow: 6,
                     transform: 'scale(1.01)',
@@ -107,7 +111,7 @@ export default function ProjectCard({ project, onClick, onDelete, showDelete }: 
             )}
 
             <CardContent sx={{ flexGrow: 1 }}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                     <Typography variant="h6" fontWeight="bold">
                         {project.nom || 'Sans nom'}
                     </Typography>
@@ -122,39 +126,45 @@ export default function ProjectCard({ project, onClick, onDelete, showDelete }: 
                     />
                 </Box>
 
-                <Stack spacing={1}>
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <BusinessIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
+                <Box display="flex" flexWrap="wrap" gap={1}>
+                    <Box flex={1} minWidth={160}>
+                        <Typography variant="body2">
                             Client: {project.clients?.nom || '—'}
                         </Typography>
-                    </Box>
-
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <EuroIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2">
+                            Capitaine: {project.capitaine || '—'}
+                        </Typography>
+                        <Typography variant="body2">
                             Budget prévu: {project.budget_prevu?.toLocaleString() || '—'} €
                         </Typography>
-                    </Box>
-
-                    <Box display="flex" alignItems="center" gap={1}>
-                        {isArchived ? (
-                            <ArchiveIcon fontSize="small" sx={{ color: grey[600] }} />
-                        ) : (
-                            <DoneIcon fontSize="small" sx={{ color: 'success.main' }} />
-                        )}
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: isArchived ? grey[600] : 'success.main',
-                                fontWeight: 'medium',
-                                textTransform: 'uppercase',
-                            }}
-                        >
-                            {project.status}
+                        <Typography variant="body2">
+                            Revenu cible: {project.revenu_cible?.toLocaleString() || '—'} €
                         </Typography>
+                        <Typography variant="body2">
+                            Budget réel: {project.budget_reel?.toLocaleString() || '—'} €
+                        </Typography>
+                        <Typography variant="body2">
+                            Marge prévue: {project.marge_prevue?.toFixed(2) || '—'} %
+                        </Typography>
+                        <Box display="flex" alignItems="center" gap={1} mt={1}>
+                            {isArchived ? (
+                                <ArchiveIcon fontSize="small" sx={{ color: grey[500] }} />
+                            ) : (
+                                <DoneIcon fontSize="small" sx={{ color: 'success.main' }} />
+                            )}
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: isArchived ? grey[500] : 'success.main',
+                                    fontWeight: 'medium',
+                                    textTransform: 'uppercase',
+                                }}
+                            >
+                                {project.status}
+                            </Typography>
+                        </Box>
                     </Box>
-                </Stack>
+                </Box>
             </CardContent>
         </Card>
     )

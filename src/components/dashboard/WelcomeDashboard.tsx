@@ -12,31 +12,61 @@ export default function DashboardWelcome() {
                 position: 'relative',
                 borderRadius: 3,
                 overflow: 'hidden',
-                height: { xs: 280, md: 360 },
-                minHeight: 500,
+                minHeight: { xs: 400, md: 500, lg: 600 },
                 backgroundImage: 'url(/cover-dashboard.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 mb: 4,
             }}
         >
+            {/* затемнение */}
             <Box
                 sx={{
                     position: 'absolute',
                     inset: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                    bgcolor: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 0,
                 }}
             />
 
-            <Container sx={{ position: 'relative', zIndex: 1, pt: 8 }}>
-                <Typography variant="h4" fontWeight="bold" color="white" gutterBottom>
+            {/* контент */}
+            <Container
+                sx={{
+                    position: 'relative',
+                    zIndex: 1,
+                    textAlign: 'center',
+                    px: 2,
+                }}
+            >
+                <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    color="white"
+                    gutterBottom
+                    sx={{ fontSize: { xs: '2rem', md: '3rem' } }}
+                >
                     Bonjour, {profile?.full_name || '...'} !
                 </Typography>
-                <Typography variant="body1" color="white" paragraph>
-                    Bienvenue dans votre espace personnel. Vous trouverez ici toutes les informations liées à votre activité au sein de l’entreprise.
+
+                <Typography
+                    variant="h6"
+                    color="white"
+                    sx={{ maxWidth: 800, mx: 'auto', mb: 2 }}
+                >
+                    Bienvenue dans votre espace personnel. Vous trouverez ici toutes les
+                    informations liées à votre activité au sein de l’entreprise.
                 </Typography>
-                <Typography variant="body2" color="white">
-                    N&aposhésitez pas à explorer les différentes sections du portail pour découvrir l’ensemble des fonctionnalités disponibles.
+
+                <Typography
+                    variant="body1"
+                    color="white"
+                    sx={{ maxWidth: 700, mx: 'auto' }}
+                >
+                    N'hésitez pas à explorer les différentes sections du portail pour découvrir
+                    l’ensemble des fonctionnalités disponibles.
                 </Typography>
             </Container>
         </Box>

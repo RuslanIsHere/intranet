@@ -27,6 +27,7 @@ export interface Profile {
     email: string
     full_name: string | null
     roles: string[] | null
+    telephone: string | null
     avatar_url: string | null
     created_at: string
     updated_at: string
@@ -37,5 +38,23 @@ export interface RHArticle {
     title: string
     content: string
     added_by: string
+    created_at: string
+}
+
+export interface Facture {
+    id: string
+    project_id: number
+    client_id: number | null
+    montant: number | null
+    status: 'envoyée' | 'payée' | 'en attente'
+    date_emission: string
+    date_paiement: string | null
+    created_at: string
+}
+
+export interface Equipe {
+    id: string
+    project_id: number
+    member_id: string
     created_at: string
 }

@@ -8,7 +8,7 @@ import { supabase } from '@/utils/supabase/client'
 
 
 const AuthPage: React.FC = () => {
-    const router = useRouter() // <-- инициализация
+    const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -103,7 +103,7 @@ const AuthPage: React.FC = () => {
                     setError('Регистрация прошла, но не удалось сохранить профиль.')
                 } else {
                     console.log('Профиль сохранён')
-                    window.location.href = '/' // или router.push('/')
+                    window.location.href = '/'
                 }
             }
         } catch (err) {
