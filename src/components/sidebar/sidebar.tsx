@@ -17,13 +17,18 @@ import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import WorkIcon from '@mui/icons-material/Work';
-import Link from 'next/link';
+import Link from "next/link";
+import BusinessIcon from '@mui/icons-material/Business';
+import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import { usePathname } from 'next/navigation';
+
 
 const navItems = [
     { text: 'Dashboard', href: '/', icon: <DashboardIcon /> },
     { text: 'RH', href: '/rh', icon: <PeopleIcon /> },
     { text: 'Projects', href: '/projects', icon: <WorkIcon /> },
+    { text: 'Clients', href: '/clients', icon: <BusinessIcon /> },
+    { text: 'Teams', href: '/equipes', icon: <GroupWorkIcon /> },
 ];
 
 export default function Sidebar({

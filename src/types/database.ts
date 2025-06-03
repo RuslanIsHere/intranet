@@ -15,6 +15,9 @@ export interface Project {
 export interface Client {
     id: number
     nom: string
+    email: string | null
+    telephone: string | null
+    adresse: string | null
 }
 
 export interface BusinessUnit {
