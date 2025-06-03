@@ -16,7 +16,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
         <Container maxWidth="sm">
             <Box mt={8}>
                 <Typography variant="h4" gutterBottom>
-                    Авторизация
+                    Connexion
                 </Typography>
                 <TextField
                     label="Email"
@@ -27,7 +27,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
-                    label="Пароль"
+                    label="Mot de passe"
                     type="password"
                     fullWidth
                     margin="normal"
@@ -41,12 +41,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
                 )}
                 <Box mt={2}>
                     <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
-                        Войти
+                        Se connecter
                     </Button>
                 </Box>
                 <Box mt={2}>
                     <Button variant="text" color="primary" fullWidth onClick={switchToRegistration}>
-                        Зарегистрироваться
+                        Créer un compte
                     </Button>
                 </Box>
             </Box>

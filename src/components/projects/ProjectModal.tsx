@@ -1,7 +1,7 @@
 'use client'
 
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions,
+    Dialog,  DialogContent, DialogActions,
     Button, TextField, MenuItem, Select, InputLabel,
     FormControl, Box,
 } from '@mui/material'
@@ -106,7 +106,6 @@ export default function ProjectModal({
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Modifier le projet</DialogTitle>
             <DialogContent>
                 <Box display="flex" flexDirection="column" gap={2} mt={1}>
                     <TextField
