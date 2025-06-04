@@ -20,6 +20,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import Link from "next/link";
 import BusinessIcon from '@mui/icons-material/Business';
 import GroupWorkIcon from '@mui/icons-material/GroupWork';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { usePathname } from 'next/navigation';
 
 
@@ -29,6 +30,7 @@ const navItems = [
     { text: 'Projects', href: '/projects', icon: <WorkIcon /> },
     { text: 'Clients', href: '/clients', icon: <BusinessIcon /> },
     { text: 'Teams', href: '/equipes', icon: <GroupWorkIcon /> },
+    { text: 'Factures', href: '/factures', icon: <AccountBalanceWalletIcon /> },
 ];
 
 export default function Sidebar({

@@ -1,4 +1,3 @@
-// EquipeList.tsx
 'use client'
 
 import { useState } from 'react'
@@ -50,7 +49,7 @@ export default function EquipeList() {
                                     <Stack spacing={1}>
                                         {members.map((member) => (
                                             <Box key={member.id} display="flex" alignItems="center" gap={2}>
-                                                <Avatar src={member.avatar_url || undefined} alt={member.full_name || ''} />
+                                                <Avatar  src="avatar.jpg" alt={member.full_name || ''} />
                                                 <Box>
                                                     <Typography variant="body2" fontWeight="medium">
                                                         {member.full_name || 'Utilisateur inconnu'}
