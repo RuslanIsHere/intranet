@@ -61,3 +61,11 @@ export interface Equipe {
     member_id: string
     created_at: string
 }
+
+export interface Comment {
+    id: string
+    project_id: number
+    author_id: string | null
+    content: string
+    created_at: string
+}

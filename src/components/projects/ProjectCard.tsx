@@ -20,6 +20,7 @@ import DoneIcon from '@mui/icons-material/Done'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useState } from 'react'
 import type { Project } from '@/types/database'
+import { useRouter } from 'next/navigation'
 import { useTheme } from '@mui/material/styles'
 
 
@@ -41,13 +42,15 @@ const buColors: Record<string, string> = {
     'Transverse': grey[500],
 }
 
-export default function ProjectCard({ project, onClick, onDelete, showDelete }: ProjectCardProps) {
+export default function ProjectCard({ project, onDelete, showDelete }: ProjectCardProps) {
     const theme = useTheme()
     const isArchived = project.status === 'archived'
     const bu = project.business_units?.nom || 'Transverse'
     const borderColor = buColors[bu] || grey[500]
 
     const [confirmOpen, setConfirmOpen] = useState(false)
+    const router = useRouter()
+    const handleCardClick = () => router.push(`/projects/${project.id}`)
 
     const handleDeleteClick = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -61,7 +64,7 @@ export default function ProjectCard({ project, onClick, onDelete, showDelete }: 
 
     return (
         <Card
-            onClick={onClick}
+            onClick={handleCardClick}
             variant="outlined"
             sx={{
                 width: '100%',
