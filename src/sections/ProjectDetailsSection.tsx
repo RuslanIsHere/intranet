@@ -15,6 +15,7 @@ interface Props {
 export const ProjectDetailsSection = ({ project }: Props) => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    console.log('project', project);
 
     return (
         <Box
@@ -42,7 +43,6 @@ export const ProjectDetailsSection = ({ project }: Props) => {
             </Box>
 
 
-            {/* Right: Comments */}
             <Box
                 sx={{
                     flex: 1,
@@ -51,6 +51,10 @@ export const ProjectDetailsSection = ({ project }: Props) => {
                     backgroundColor: 'background.paper',
                     boxShadow: 2,
                     minHeight: 300,
+                    maxHeight: 850,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
                 }}
             >
                 <ProjectComments projectId={project.id} />

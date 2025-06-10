@@ -57,7 +57,8 @@ export default function ProjectCard({ project, onDelete, showDelete }: ProjectCa
         setConfirmOpen(true)
     }
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = (e: React.MouseEvent) => {
+        e.stopPropagation()
         onDelete?.()
         setConfirmOpen(false)
     }

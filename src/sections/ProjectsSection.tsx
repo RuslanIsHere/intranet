@@ -44,26 +44,35 @@ export const ProjectsSection = () => {
         setModalOpen(true);
     };
 
-    const handleSaveProject = async (updated: Project) => {
-        const { id, nom, budget_prevu, status } = updated;
-
-        const { error } = await supabase
+    const handleSaveProject = async (project: Project) => {
+        const { data, error } = await supabase
             .from('projects')
-            .update({ nom, budget_prevu, status })
-            .eq('id', id);
+            .insert({
+                nom: project.nom,
+                budget_prevu: project.budget_prevu,
+                budget_reel: project.budget_reel,
+                revenu_cible: project.revenu_cible,
+                marge_prevue: project.marge_prevue,
+                status: project.status,
+                client_id: project.client_id,
+                business_unit_id: project.business_unit_id,
+                capitaine_id: project.capitaine_id,
+            })
+            .select()
+            .single()
 
         if (error) {
-            console.error(error);
-            setSnackbar({ open: true, message: 'Erreur lors de la mise à jour', severity: 'error' });
-        } else {
-            setSnackbar({ open: true, message: 'Projet mis à jour avec succès', severity: 'success' });
-            setProjects((prev) =>
-                prev.map((p) => (p.id === id ? { ...p, nom, budget_prevu, status } : p))
-            );
+            console.error(error)
+            setSnackbar({ open: true, message: 'Erreur lors de la création', severity: 'error' })
+        } else if (data) {
+            setProjects((prev) => [...prev, data])
+            setSnackbar({ open: true, message: 'Projet créé avec succès', severity: 'success' })
         }
 
-        setModalOpen(false);
-    };
+        setModalOpen(false)
+    }
+
+
 
     const handleDeleteProject = async (project: Project) => {
         const { error } = await supabase.from('projects').delete().eq('id', project.id);

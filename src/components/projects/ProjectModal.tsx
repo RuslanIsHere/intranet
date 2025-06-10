@@ -84,11 +84,8 @@ export default function ProjectModal({
         }))
     }
 
-    const handleSave = () => {
-        if (!project) return
-
-        const updated: Project = {
-            ...project,
+    const handleSave = async () => {
+        const newProject: Omit<Project, 'id'> = {
             nom: form.nom,
             budget_prevu: parseFloat(form.budget_prevu) || 0,
             budget_reel: parseFloat(form.budget_reel) || 0,
@@ -98,11 +95,14 @@ export default function ProjectModal({
             client_id: form.client_id,
             business_unit_id: form.business_unit_id,
             capitaine_id: form.capitaine_id,
+            created_at: new Date().toISOString(),
         }
 
-        onSave(updated)
+        onSave(newProject as Project)
         onClose()
     }
+
+
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>

@@ -5,7 +5,6 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
     Paper,
@@ -116,7 +115,6 @@ export default function ClientList() {
                 </Table>
             </Paper>
 
-            {/* Модалки и диалоги */}
             <ClientModal client={selectedClient} onClose={() => {
                 setSelectedClient(null)
                 fetchClients()

@@ -6,90 +6,48 @@ import {
     TextField,
     Button,
     Stack,
-    CircularProgress,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabase/client'
+import { useUserContext } from '@/context/UserContext'
 import type { Comment } from '@/types/database'
 
-export interface CommentWithAuthor extends Comment {
-    profiles?: {
-        full_name: string | null
-        email: string
-    } | null
-}
-
-interface RawCommentWithAuthor extends Comment {
-    profiles: {
-        full_name: string | null
-        email: string
-    }[] | null
-}
-
 export default function ProjectComments({ projectId }: { projectId: number }) {
-    const [comments, setComments] = useState<CommentWithAuthor[]>([])
+    const { profile } = useUserContext()
+    const [comments, setComments] = useState<Comment[]>([])
     const [content, setContent] = useState('')
-    const [loading, setLoading] = useState(true)
     const [posting, setPosting] = useState(false)
 
     useEffect(() => {
         const fetchComments = async () => {
-            setLoading(true)
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from('comments')
-                .select(`
-          id,
-          project_id,
-          content,
-          created_at,
-          author_id,
-          profiles (
-            full_name,
-            email
-          )
-        `)
+                .select('*')
                 .eq('project_id', projectId)
                 .order('created_at', { ascending: false })
 
-            if (!error && data) {
-                const cleaned: CommentWithAuthor[] = (data as RawCommentWithAuthor[]).map((item) => ({
-                    ...item,
-                    profiles: item.profiles?.[0] || null,
-                }))
-                setComments(cleaned)
-            }
-            setLoading(false)
+            if (data) setComments(data)
         }
 
         fetchComments()
     }, [projectId])
 
     const handleSubmit = async () => {
-        if (!content.trim()) return
+        if (!content.trim() || !profile?.id) return
         setPosting(true)
 
         const { data, error } = await supabase
             .from('comments')
-            .insert({ project_id: projectId, content })
-            .select(`
-        id,
-        project_id,
-        content,
-        created_at,
-        author_id,
-        profiles (
-          full_name,
-          email
-        )
-      `)
+            .insert({
+                project_id: projectId,
+                content,
+                author_id: profile.id,
+            })
+            .select('*')
             .single()
 
         if (!error && data) {
-            const newComment: CommentWithAuthor = {
-                ...data,
-                profiles: (data.profiles as RawCommentWithAuthor['profiles'])?.[0] || null,
-            }
-            setComments((prev) => [newComment, ...prev])
+            setComments((prev) => [data, ...prev])
             setContent('')
         }
 
@@ -97,45 +55,76 @@ export default function ProjectComments({ projectId }: { projectId: number }) {
     }
 
     return (
-        <Box>
+        <Box
+            display="flex"
+            flexDirection="column"
+            height="100%"
+            sx={{ minHeight: 0 }}
+        >
             <Typography variant="h6" fontWeight="bold" mb={2}>
                 Commentaires
             </Typography>
 
-            <Stack spacing={2}>
-                <TextField
-                    label="Ajouter un commentaire"
-                    value={content}
-                    multiline
-                    minRows={2}
-                    onChange={(e) => setContent(e.target.value)}
-                />
-                <Button variant="contained" onClick={handleSubmit} disabled={posting}>
-                    {posting ? 'Envoi...' : 'Envoyer'}
-                </Button>
-            </Stack>
 
-            {loading ? (
-                <Box mt={4} textAlign="center">
-                    <CircularProgress />
-                </Box>
-            ) : (
-                <Box mt={3}>
-                    {comments.map((c) => (
-                        <Box key={c.id} mb={2} p={2} bgcolor="#f9f9f9" borderRadius={2}>
-                            <Typography variant="body2" fontWeight="bold">
-                                {c.profiles?.full_name || c.profiles?.email || 'Utilisateur'}
-                            </Typography>
-                            <Typography variant="body2" mb={1}>
-                                {c.content}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                                {new Date(c.created_at).toLocaleString('fr-FR')}
-                            </Typography>
-                        </Box>
-                    ))}
-                </Box>
-            )}
+            <Box sx={{ flexShrink: 0, mb: 2 }}>
+                <Stack spacing={2}>
+                    <TextField
+                        label="Ajouter un commentaire"
+                        value={content}
+                        multiline
+                        minRows={2}
+                        onChange={(e) => setContent(e.target.value)}
+                    />
+                    <Button variant="contained" onClick={handleSubmit} disabled={posting}>
+                        {posting ? 'Envoi...' : 'Envoyer'}
+                    </Button>
+                </Stack>
+            </Box>
+
+
+            <Box
+                sx={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    pr: 1,
+                    minHeight: 0,
+                    '&::-webkit-scrollbar': {
+                        width: '6px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: '#f1f1f1',
+                        borderRadius: '3px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: '#c1c1c1',
+                        borderRadius: '3px',
+                        '&:hover': {
+                            background: '#a1a1a1',
+                        },
+                    },
+                }}
+            >
+                {comments.map((c) => (
+                    <Box key={c.id} mb={2} p={2} bgcolor="#f9f9f9" borderRadius={2}>
+                        <Typography variant="body2" fontWeight="bold">
+                            {profile?.full_name || profile?.email || 'Utilisateur'}
+                        </Typography>
+                        <Typography variant="body2" mb={1}>
+                            {c.content}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            {new Date(c.created_at).toLocaleString('fr-FR')}
+                        </Typography>
+                    </Box>
+                ))}
+
+                {comments.length === 0 && (
+                    <Typography variant="body2" color="text.secondary" textAlign="center" mt={4}>
+                        Aucun commentaire pour le moment
+                    </Typography>
+                )}
+            </Box>
         </Box>
     )
 }
