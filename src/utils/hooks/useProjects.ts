@@ -5,6 +5,7 @@ import type { Project, Client, BusinessUnit } from '@/types/database';
 interface ProjectWithRelations extends Project {
     clients?: Client | null;
     business_units?: BusinessUnit | null;
+    profiles?: { full_name: string | null } | null;
 }
 
 export function useProjects() {
@@ -20,7 +21,9 @@ export function useProjects() {
                 .select(`
                     *,
                     clients ( nom ),
-                    business_units ( nom )
+                    business_units ( nom ), 
+                    profiles:capitaine_id ( full_name )
+
                 `);
 
             if (error) {

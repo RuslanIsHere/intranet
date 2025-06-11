@@ -106,7 +106,10 @@ export default function ProjectComments({ projectId }: { projectId: number }) {
                 }}
             >
                 {comments.map((c) => (
-                    <Box key={c.id} mb={2} p={2} bgcolor="#f9f9f9" borderRadius={2}>
+                    <Box key={c.id} mb={2} p={2} borderRadius={2} sx={{
+                        bgcolor: (theme) =>
+                            theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
+                        }}>
                         <Typography variant="body2" fontWeight="bold">
                             {profile?.full_name || profile?.email || 'Utilisateur'}
                         </Typography>

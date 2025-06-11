@@ -13,16 +13,18 @@ interface ProjectListProps {
 export const ProjectList = ({ projects, onProjectClick, onDeleteProject, isAdmin }: ProjectListProps) => {
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'flex-start' }}>
-            {projects.map((project) => (
-                <Box key={project.id} sx={{ flex: '1 1 220px', maxWidth: 300, width: '100%' }}>
-                    <ProjectCard
-                        project={project}
-                        onClick={() => onProjectClick(project)}
-                        onDelete={() => onDeleteProject(project)}
-                        showDelete={isAdmin}
-                    />
-                </Box>
-            ))}
+            {[...projects]
+                .sort((a, b) => (a.nom || '').localeCompare(b.nom || ''))
+                .map((project) => (
+                    <Box key={project.id} sx={{ flex: '1 1 220px', maxWidth: 300, width: '100%' }}>
+                        <ProjectCard
+                            project={project}
+                            onClick={() => onProjectClick(project)}
+                            onDelete={() => onDeleteProject(project)}
+                            showDelete={isAdmin}
+                        />
+                    </Box>
+                ))}
         </Box>
     );
 };

@@ -28,7 +28,7 @@ interface ProjectCardProps {
     project: Project & {
         clients?: { nom: string | null } | null
         business_units?: { nom: string | null } | null
-        capitaine?: string | null
+        profiles?: { full_name: string | null } | null
     }
     onClick?: () => void
     onDelete?: () => void
@@ -136,7 +136,7 @@ export default function ProjectCard({ project, onDelete, showDelete }: ProjectCa
                             Client: {project.clients?.nom || '—'}
                         </Typography>
                         <Typography variant="body2">
-                            Capitaine: {project.capitaine || '—'}
+                            Capitaine: {project.profiles?.full_name || '—'}
                         </Typography>
                         <Typography variant="body2">
                             Budget prévu: {project.budget_prevu?.toLocaleString() || '—'} €
