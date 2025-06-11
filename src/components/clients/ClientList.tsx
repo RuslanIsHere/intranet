@@ -18,16 +18,26 @@ import {
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Client } from '@/types/database'
-import ClientModal from './ClientModal'
 import { supabase } from '@/utils/supabase/client'
 import { useUserContext } from '@/context/UserContext'
 import ClientToolbar from './ClientToolbar'
+import CreateClientModal from './CreateClientModal'
+import EditClientModal from './ClientModal'
+import { SnackbarComponent } from '@/components/projects/SnackbarComponent'
+
 
 export default function ClientList() {
     const [clients, setClients] = useState<Client[]>([])
-    const [selectedClient, setSelectedClient] = useState<Client | null>(null)
-    const [confirmDelete, setConfirmDelete] = useState<Client | null>(null)
     const [search, setSearch] = useState('')
+
+    const [createOpen, setCreateOpen] = useState(false)
+    const [editClient, setEditClient] = useState<Client | null>(null)
+    const [confirmDelete, setConfirmDelete] = useState<Client | null>(null)
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState('')
+    const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+
 
     const { profile } = useUserContext()
     const isAdmin = profile?.roles?.includes('admin')
@@ -48,6 +58,13 @@ export default function ClientList() {
         fetchClients()
     }, [])
 
+    const showSnackbar = (message: string, severity: 'success' | 'error' = 'success') => {
+        setSnackbarMessage(message)
+        setSnackbarSeverity(severity)
+        setSnackbarOpen(true)
+    }
+
+
     const fetchClients = async () => {
         const { data, error } = await supabase.from('clients').select('*')
         if (data) setClients(data)
@@ -56,17 +73,27 @@ export default function ClientList() {
 
     const handleDelete = async () => {
         if (!confirmDelete) return
-        await supabase.from('clients').delete().eq('id', confirmDelete.id)
+
+        const { error } = await supabase.from('clients').delete().eq('id', confirmDelete.id)
+
+        if (error) {
+            console.error('Erreur suppression:', error)
+            showSnackbar('Erreur lors de la suppression', 'error')
+        } else {
+            showSnackbar('Client supprimé avec succès', 'success')
+            fetchClients()
+        }
+
         setConfirmDelete(null)
-        fetchClients()
     }
+
 
     return (
         <Box>
             <ClientToolbar
                 search={search}
                 setSearch={setSearch}
-                onAdd={() => setSelectedClient({} as Client)}
+                onAdd={() => setCreateOpen(true)}
             />
 
             <Paper
@@ -101,7 +128,7 @@ export default function ClientList() {
                                 <TableCell>{client.adresse || '-'}</TableCell>
                                 {isAdmin && (
                                     <TableCell align="right">
-                                        <IconButton onClick={() => setSelectedClient(client)}>
+                                        <IconButton onClick={() => setEditClient(client)}>
                                             <EditIcon />
                                         </IconButton>
                                         <IconButton color="error" onClick={() => setConfirmDelete(client)}>
@@ -115,10 +142,26 @@ export default function ClientList() {
                 </Table>
             </Paper>
 
-            <ClientModal client={selectedClient} onClose={() => {
-                setSelectedClient(null)
-                fetchClients()
-            }} />
+            <CreateClientModal
+                open={createOpen}
+                onClose={() => setCreateOpen(false)}
+                onSuccess={(msg) => {
+                    fetchClients()
+                    showSnackbar(msg, msg.includes('Erreur') ? 'error' : 'success')
+                }}
+            />
+
+            {editClient && (
+                <EditClientModal
+                    client={editClient}
+                    onClose={() => setEditClient(null)}
+                    onSuccess={(msg) => {
+                        fetchClients()
+                        showSnackbar(msg, msg.includes('Erreur') ? 'error' : 'success')
+                    }}
+                />
+            )}
+
 
             <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
                 <DialogTitle>Supprimer ce client ?</DialogTitle>
@@ -129,6 +172,13 @@ export default function ClientList() {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <SnackbarComponent
+                open={snackbarOpen}
+                message={snackbarMessage}
+                severity={snackbarSeverity}
+                onClose={() => setSnackbarOpen(false)}
+            />
+
         </Box>
     )
 }

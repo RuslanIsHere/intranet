@@ -10,7 +10,7 @@ interface ClientToolbarProps {
     onAdd: () => void
 }
 
-export default function ClientToolbar({ search, setSearch, onAdd}: ClientToolbarProps) {
+export default function ClientToolbar({ search, setSearch, onAdd }: ClientToolbarProps) {
     const { profile, loading } = useUserContext()
     const isAdmin = profile?.roles?.includes('admin')
 
@@ -23,7 +23,11 @@ export default function ClientToolbar({ search, setSearch, onAdd}: ClientToolbar
                 fullWidth
             />
             {!loading && isAdmin && (
-                <Button variant="contained" onClick={onAdd} startIcon={<AddIcon />}>
+                <Button
+                    variant="contained"
+                    onClick={onAdd}
+                    startIcon={<AddIcon />}
+                >
                     Ajouter
                 </Button>
             )}

@@ -8,17 +8,16 @@ import {
     Button,
     Stack,
 } from '@mui/material'
-import { useState, useEffect } from 'react'
-import { Client } from '@/types/database'
+import { useState } from 'react'
 import { supabase } from '@/utils/supabase/client'
 
 interface Props {
-    client: Client
+    open: boolean
     onClose: () => void
     onSuccess?: (message: string) => void
 }
 
-export default function EditClientModal({ client, onClose, onSuccess }: Props) {
+export default function CreateClientModal({ open, onClose, onSuccess }: Props) {
     const [form, setForm] = useState({
         nom: '',
         email: '',
@@ -27,41 +26,28 @@ export default function EditClientModal({ client, onClose, onSuccess }: Props) {
     })
     const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        if (client) {
-            setForm({
-                nom: client.nom || '',
-                email: client.email || '',
-                telephone: client.telephone || '',
-                adresse: client.adresse || '',
-            })
-        }
-    }, [client])
-
     const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [field]: e.target.value })
     }
 
-    const handleUpdate = async () => {
+    const handleCreate = async () => {
         setLoading(true)
-        const { error } = await supabase
-            .from('clients')
-            .update(form)
-            .eq('id', client.id)
+        const { error } = await supabase.from('clients').insert(form)
 
         setLoading(false)
 
         if (error) {
-            console.error('Erreur modification client:', error)
-            onSuccess?.('Erreur lors de la modification')
+            console.error('Erreur création client:', error)
+            onSuccess?.('Erreur lors de la création')
         } else {
-            onSuccess?.('Client modifié avec succès')
+            onSuccess?.('Client ajouté avec succès')
             onClose()
+            setForm({ nom: '', email: '', telephone: '', adresse: '' }) // reset
         }
     }
 
     return (
-        <Dialog open={!!client} onClose={onClose} maxWidth="sm" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogContent>
                 <Stack spacing={2} mt={1}>
                     <TextField label="Nom" value={form.nom} onChange={handleChange('nom')} fullWidth />
@@ -72,8 +58,8 @@ export default function EditClientModal({ client, onClose, onSuccess }: Props) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Annuler</Button>
-                <Button onClick={handleUpdate} variant="contained" disabled={loading}>
-                    {loading ? 'Enregistrement...' : 'Enregistrer'}
+                <Button onClick={handleCreate} variant="contained" disabled={loading}>
+                    {loading ? 'Ajout...' : 'Ajouter'}
                 </Button>
             </DialogActions>
         </Dialog>
