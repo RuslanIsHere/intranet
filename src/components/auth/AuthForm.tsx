@@ -14,7 +14,11 @@ interface AuthFormProps {
 const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassword, error, handleLogin, switchToRegistration }) => {
     return (
         <Container maxWidth="sm">
-            <Box mt={8}>
+            <Box mt={8} component="form"
+                 onSubmit={(e) => {
+                    e.preventDefault()
+                    handleLogin()
+            }}>
                 <Typography variant="h4" gutterBottom>
                     Connexion
                 </Typography>
@@ -25,6 +29,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
                     margin="normal"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    autoFocus
+                    required
                 />
                 <TextField
                     label="Mot de passe"
@@ -33,6 +39,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
                     margin="normal"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoFocus
+                    required
                 />
                 {error && (
                     <Typography color="error" variant="body2">
@@ -40,7 +48,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassw
                     </Typography>
                 )}
                 <Box mt={2}>
-                    <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
+                    <Button type="submit" variant="contained" color="primary" fullWidth onClick={handleLogin}>
                         Se connecter
                     </Button>
                 </Box>

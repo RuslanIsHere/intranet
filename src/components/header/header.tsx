@@ -73,18 +73,21 @@ export function Header({
                             <IconButton color="inherit" onClick={handleMenuOpen}>
                                 <Avatar>{profile.email.charAt(0).toUpperCase()}</Avatar>
                             </IconButton>
-                            <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-                                <MenuItem disabled>
-                                    <Box sx={{ fontSize: 13, color: 'text.secondary' }}>{profile.email}</Box>
-                                </MenuItem>
-                                <MenuItem onClick={() => router.push('/profile')}>Mon profil</MenuItem>
-                                <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-                                    Se déconnecter
-                                </MenuItem>
-                            </Menu>
 
+                            {!isNavMini && (
+                                <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+                                    <MenuItem disabled>
+                                        <Box sx={{ fontSize: 13, color: 'text.secondary' }}>{profile.email}</Box>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => router.push('/profile')}>Mon profil</MenuItem>
+                                    <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+                                        Se déconnecter
+                                    </MenuItem>
+                                </Menu>
+                            )}
                         </>
                     )}
+
                 </Stack>
             </Toolbar>
         </AppBar>

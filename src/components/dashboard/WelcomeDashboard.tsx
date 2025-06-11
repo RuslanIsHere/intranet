@@ -70,8 +70,8 @@ export default function DashboardWelcome() {
                         color="white"
                         sx={{ maxWidth: 700, mx: 'auto' }}
                     >
-                        N'hésitez pas à explorer les différentes sections du portail pour découvrir
-                        l’ensemble des fonctionnalités disponibles.
+                        N&apos;hésitez pas à explorer les différentes sections du portail pour découvrir
+                        l&apos;ensemble des fonctionnalités disponibles.
                     </Typography>
                 </Container>
             </Box>

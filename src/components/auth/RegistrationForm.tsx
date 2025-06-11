@@ -60,7 +60,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
     return (
         <Container maxWidth="sm">
-            <Box mt={8}>
+            <Box mt={8}     component="form"
+                 onSubmit={(e) => {
+                     e.preventDefault()
+                     handleRegistration()
+                 }}>
                 <Typography variant="h4" gutterBottom>
                     Création de compte
                 </Typography>
@@ -73,6 +77,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     margin="normal"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                 />
                 <TextField
                     label="Nom d'utilisateur"
@@ -81,6 +86,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     margin="normal"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    required
                 />
                 <TextField
                     label="Mot de passe"
@@ -90,6 +96,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     color={passwordValid ? 'success' : undefined}
+                    required
                 />
 
 
@@ -123,6 +130,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     }
                     disabled={!passwordValid}
                     color={passwordValid ? 'success' : undefined}
+                    required
                 />
 
                 {error && (
@@ -133,6 +141,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
                 <Box mt={2}>
                     <Button
+                        type="submit"
                         variant="contained"
                         color="primary"
                         fullWidth
