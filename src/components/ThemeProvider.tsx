@@ -42,8 +42,8 @@ export default function MuiThemeProvider({ children }: { children: ReactNode }) 
                     main: '#1976d2',
                 },
                 background: {
-                    default: mode === 'light' ? '#f9f5f0' : '#1e1e1e', // мягкий тёмный
-                    paper: mode === 'light' ? '#f9f5f0' : '#1e1e1e',   // те же
+                    default: mode === 'light' ? '#f9f5f0' : '#1e1e1e',
+                    paper: mode === 'light' ? '#f9f5f0' : '#1e1e1e',
                 },
                 text: {
                     primary: mode === 'light' ? '#1a1a1a' : '#e5e5e5',
@@ -51,7 +51,7 @@ export default function MuiThemeProvider({ children }: { children: ReactNode }) 
             },
         }), [mode])
 
-    if (!mounted) return null; // 🔑 Ждём, пока определится тема
+    if (!mounted) return null; //
 
     return (
         <ColorModeContext.Provider value={colorMode}>

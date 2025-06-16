@@ -10,12 +10,10 @@ interface ProjectWithRelations extends Project {
 
 export function useProjects() {
     const [projects, setProjects] = useState<ProjectWithRelations[]>([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
         const fetchProjects = async () => {
-            setLoading(true);
             const { data, error } = await supabase
                 .from('projects')
                 .select(`
@@ -31,11 +29,10 @@ export function useProjects() {
             } else {
                 setProjects(data as ProjectWithRelations[]);
             }
-            setLoading(false);
         };
 
         fetchProjects();
     }, []);
 
-    return { projects, loading, error };
+    return { projects, error };
 }

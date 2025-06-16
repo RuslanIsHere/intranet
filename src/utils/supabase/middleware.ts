@@ -29,9 +29,13 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    const {data: { user }, error} = await supabase.auth.getUser()
-
-    if (error) console.error('Error getting user:', error)
+    let user = null
+    try {
+        const { data } = await supabase.auth.getUser()
+        user = data.user
+    } catch (e) {
+        console.error('Failed to get user in middleware:', e)
+    }
 
     if (!user &&
         !request.nextUrl.pathname.startsWith('/login') &&

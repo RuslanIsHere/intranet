@@ -117,7 +117,7 @@ export default function ProjectCard({ project, onDelete, showDelete }: ProjectCa
             <CardContent sx={{ flexGrow: 1 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                     <Typography variant="h6" fontWeight="bold">
-                        {project.nom || 'Sans nom'}
+                        {project.nom }
                     </Typography>
                     <Chip
                         label={bu}

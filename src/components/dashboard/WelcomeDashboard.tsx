@@ -5,12 +5,20 @@ import { useUserContext } from '@/context/UserContext'
 import { useProjects } from '@/utils/hooks/useProjects'
 import { useClients } from '@/utils/hooks/useClients'
 import { useUsers } from '@/utils/hooks/useUsers'
+import {useEffect} from "react";
 
 export default function DashboardWelcome() {
     const { profile } = useUserContext()
-    const { projects } = useProjects()
-    const { clients } = useClients()
-    const { users } = useUsers()
+    const { projects, error: projectsError } = useProjects()
+    const { clients, error: clientsError } = useClients()
+    const { users, error: usersError } = useUsers()
+
+    useEffect(() => {
+        if (projectsError) console.error('Erreur chargement projets:', projectsError)
+        if (clientsError) console.error('Erreur chargement clients:', clientsError)
+        if (usersError) console.error('Erreur chargement utilisateurs:', usersError)
+    }, [projectsError, clientsError, usersError])
+
 
     return (
         <Box sx={{ mb: 4 }}>

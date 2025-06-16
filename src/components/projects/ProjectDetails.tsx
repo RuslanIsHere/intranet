@@ -75,7 +75,7 @@ export default function ProjectDetails({ project }: Props) {
             .update(updated)
             .eq('id', project.id)
 
-        if (error) {
+        if (error || form.nom.length===0) {
             console.error('Erreur lors de la sauvegarde:', error)
             setSnackbar({
                 open: true,

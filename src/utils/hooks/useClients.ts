@@ -4,12 +4,10 @@ import type { Client } from '@/types/database';
 
 export function useClients() {
     const [clients, setClients] = useState<Client[]>([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
         const fetchClients = async () => {
-            setLoading(true);
             const { data, error } = await supabase.from('clients').select('*');
 
             if (error) {
@@ -17,11 +15,10 @@ export function useClients() {
             } else {
                 setClients(data || []);
             }
-            setLoading(false);
         };
 
         fetchClients();
     }, []);
 
-    return { clients, loading, error };
+    return { clients, error };
 }

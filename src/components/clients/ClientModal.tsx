@@ -43,6 +43,10 @@ export default function EditClientModal({ client, onClose, onSuccess }: Props) {
     }
 
     const handleUpdate = async () => {
+        if (!form.nom.trim() || !form.email.trim() || !form.telephone.trim()) {
+            onSuccess?.('Erreur : veuillez remplir les champs obligatoires')
+            return
+        }
         setLoading(true)
         const { error } = await supabase
             .from('clients')

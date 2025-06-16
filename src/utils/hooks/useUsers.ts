@@ -4,12 +4,10 @@ import type { Profile } from '@/types/database';
 
 export function useUsers() {
     const [users, setUsers] = useState<Profile[]>([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
-            setLoading(true);
             const { data, error } = await supabase.from('profiles').select('*');
 
             if (error) {
@@ -17,11 +15,10 @@ export function useUsers() {
             } else {
                 setUsers(data || []);
             }
-            setLoading(false);
         };
 
         fetchUsers();
     }, []);
 
-    return { users, loading, error };
+    return { users,  error };
 }
