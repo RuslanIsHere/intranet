@@ -13,31 +13,31 @@ interface FactureRowRaw extends Facture {
     clients: { nom: string | null }
 }
 
-
 export function useFactures() {
     const [factures, setFactures] = useState<FactureDisplay[]>([])
-    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         const fetch = async () => {
             const { data, error } = await supabase
                 .from('factures')
                 .select(`
-          id,
-          project_id,
-          client_id,
-          montant,
-          status,
-          date_emission,
-          date_paiement,
-          created_at,
-          projects!project_id ( nom ),
-          clients!client_id ( nom )
-        `)
+                    id,
+                    project_id,
+                    client_id,
+                    montant,
+                    status,
+                    date_emission,
+                    date_paiement,
+                    created_at,
+                    projects!project_id ( nom ),
+                    clients!client_id ( nom )
+                `)
                 .order('date_emission', { ascending: false })
 
             if (error) {
                 console.error('Erreur:', error)
+                setError(error.message)
                 return
             }
 
@@ -50,11 +50,11 @@ export function useFactures() {
             }))
 
             setFactures(cleaned)
-            setLoading(false)
+            setError(null)
         }
 
         fetch()
     }, [])
 
-    return { factures, loading }
+    return { factures, error }
 }

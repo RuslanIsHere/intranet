@@ -43,7 +43,6 @@ export const useEquipesGrouped = () => {
                 return
             }
 
-            // 🔥 Приводим вручную, потому что Supabase возвращает тип с массивами
             const rows = data as unknown as EquipeRowRaw[]
 
             const grouped = new Map<number, ProjectWithEquipe>()
