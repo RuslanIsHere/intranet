@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import { useUserContext } from '@/context/UserContext'
 import { supabase } from '@/utils/supabase/client'
+import {isValidPhone} from "@/utils/validation";
 
 export default function AccountProfile() {
     const { profile, setProfile } = useUserContext()
@@ -28,6 +29,10 @@ export default function AccountProfile() {
     const handleSave = async () => {
         if (!profile) return
 
+        if (!isValidPhone(telephone)) {
+            setMessage('Numéro invalide.')
+            return
+        }
         setLoading(true)
         setMessage(null)
 
@@ -37,9 +42,9 @@ export default function AccountProfile() {
             .eq('id', profile.id)
 
         if (error) {
-            setMessage('❌ Erreur lors de la mise à jour.')
+            setMessage('Erreur lors de la mise à jour.')
         } else {
-            setMessage('✅ Téléphone mis à jour.')
+            setMessage('Téléphone mis à jour.')
             setProfile?.({ ...profile, telephone })
         }
 
