@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const isAuthPage = pathname === '/login'
+    const isAuthPage = pathname === '/login' || pathname === '/register';
     const { loading } = useUserContext()
     const [mobileOpen, setMobileOpen] = useState(false)
     const [collapsed, setCollapsed] = useState(false)

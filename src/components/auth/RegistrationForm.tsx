@@ -1,28 +1,17 @@
 import React, { useEffect, useRef } from 'react'
-import {
-    TextField,
-    Button,
-    Typography,
-    Container,
-    Box,
-    List,
-    ListItem,
-    ListItemText,
-    Collapse,
-} from '@mui/material'
+import {TextField, Button, Typography, Container, Box, List, ListItem, ListItemText, Collapse} from '@mui/material'
 
-interface RegistrationFormProps {
-    email: string
-    setEmail: React.Dispatch<React.SetStateAction<string>>
-    password: string
-    setPassword: React.Dispatch<React.SetStateAction<string>>
-    confirmPassword: string
-    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
-    username: string
-    setUsername: React.Dispatch<React.SetStateAction<string>>
+interface Props {
+    form: {
+        email: string
+        username: string
+        password: string
+        confirmPassword: string
+    }
+    setForm: React.Dispatch<React.SetStateAction<Props['form']>>
     error: string
-    handleRegistration: () => void
-    switchToLogin: () => void
+    onSubmit: () => void
+    onSwitchToLogin: () => void
 }
 
 const getPasswordErrors = (password: string): string[] => {
@@ -35,36 +24,27 @@ const getPasswordErrors = (password: string): string[] => {
     return errors
 }
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({
-                                                               email,
-                                                               setEmail,
-                                                               password,
-                                                               setPassword,
-                                                               confirmPassword,
-                                                               setConfirmPassword,
-                                                               username,
-                                                               setUsername,
-                                                               error,
-                                                               handleRegistration,
-                                                               switchToLogin,
-                                                           }) => {
+const RegistrationForm: React.FC<Props> = ({form, setForm, error, onSubmit, onSwitchToLogin,}) => {
     const emailRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         emailRef.current?.focus()
     }, [])
 
-    const passwordErrors = getPasswordErrors(password)
+    const passwordErrors = getPasswordErrors(form.password)
     const passwordValid = passwordErrors.length === 0
-    const passwordsMatch = password === confirmPassword
+    const passwordsMatch = form.password === form.confirmPassword
+
+    const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm(prev => ({ ...prev, [field]: e.target.value }))
+    }
 
     return (
         <Container maxWidth="sm">
-            <Box mt={8}     component="form"
-                 onSubmit={(e) => {
-                     e.preventDefault()
-                     handleRegistration()
-                 }}>
+            <Box mt={8} component="form" onSubmit={(e) => {
+                e.preventDefault()
+                onSubmit()
+            }}>
                 <Typography variant="h4" gutterBottom>
                     Création de compte
                 </Typography>
@@ -75,17 +55,16 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     type="email"
                     fullWidth
                     margin="normal"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={form.email}
+                    onChange={handleChange('email')}
                     required
                 />
                 <TextField
                     label="Nom d'utilisateur"
-                    type="text"
                     fullWidth
                     margin="normal"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={form.username}
+                    onChange={handleChange('username')}
                     required
                 />
                 <TextField
@@ -93,14 +72,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     type="password"
                     fullWidth
                     margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={form.password}
+                    onChange={handleChange('password')}
                     color={passwordValid ? 'success' : undefined}
                     required
                 />
-
-
-                <Collapse in={!passwordValid && password.length > 0}>
+                <Collapse in={!passwordValid && form.password.length > 0}>
                     <Box ml={1} mt={1}>
                         <Typography variant="caption" color="error">
                             Le mot de passe doit contenir :
@@ -114,46 +91,37 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         </List>
                     </Box>
                 </Collapse>
-
                 <TextField
                     label="Confirmer le mot de passe"
                     type="password"
                     fullWidth
                     margin="normal"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    error={!!confirmPassword && !passwordsMatch}
-                    helperText={
-                        !!confirmPassword && !passwordsMatch
-                            ? 'Les mots de passe ne correspondent pas'
-                            : ''
-                    }
+                    value={form.confirmPassword}
+                    onChange={handleChange('confirmPassword')}
+                    error={!!form.confirmPassword && !passwordsMatch}
+                    helperText={!passwordsMatch && form.confirmPassword ? 'Les mots de passe ne correspondent pas' : ''}
                     disabled={!passwordValid}
                     color={passwordValid ? 'success' : undefined}
                     required
                 />
-
                 {error && (
                     <Typography color="error" variant="body2">
                         {error}
                     </Typography>
                 )}
-
                 <Box mt={2}>
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
                         fullWidth
-                        onClick={handleRegistration}
                         disabled={!passwordValid || !passwordsMatch}
                     >
                         S&apos;inscrire
                     </Button>
                 </Box>
-
                 <Box mt={2}>
-                    <Button variant="text" color="primary" fullWidth onClick={switchToLogin}>
+                    <Button variant="text" color="primary" fullWidth onClick={onSwitchToLogin}>
                         Se connecter
                     </Button>
                 </Box>

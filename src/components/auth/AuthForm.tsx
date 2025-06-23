@@ -1,62 +1,110 @@
 import React from 'react'
-import { TextField, Button, Typography, Container, Box } from '@mui/material'
+import {
+    TextField,
+    Button,
+    Typography,
+    Container,
+    Box,
+    Paper,
+} from '@mui/material'
+import Image from 'next/image'
 
 interface AuthFormProps {
-    email: string
-    setEmail: React.Dispatch<React.SetStateAction<string>>
-    password: string
-    setPassword: React.Dispatch<React.SetStateAction<string>>
+    form: {
+        email: string
+        password: string
+    }
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     error: string
-    handleLogin: () => void
-    switchToRegistration: () => void
+    onSubmit: () => void
+    onSwitchToRegister: () => void
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ email, setEmail, password, setPassword, error, handleLogin, switchToRegistration }) => {
+const AuthForm: React.FC<AuthFormProps> = ({
+                                               form,
+                                               onChange,
+                                               error,
+                                               onSubmit,
+                                               onSwitchToRegister,
+                                           }) => {
     return (
         <Container maxWidth="sm">
-            <Box mt={8} component="form"
-                 onSubmit={(e) => {
-                    e.preventDefault()
-                    handleLogin()
-            }}>
-                <Typography variant="h4" gutterBottom>
-                    Connexion
+            <Box mt={8} display="flex" flexDirection="column" alignItems="center" >
+                {/* Logo */}
+                <Image src={'/logo.svg'} alt="Logo" width={80} height={80} />
+
+                {/* Titre de bienvenue */}
+                <Typography variant="h5" mt={2} gutterBottom>
+                    Bienvenue sur la page de connexion
                 </Typography>
-                <TextField
-                    label="Email"
-                    type="email"
-                    fullWidth
-                    margin="normal"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoFocus
-                    required
-                />
-                <TextField
-                    label="Mot de passe"
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoFocus
-                    required
-                />
-                {error && (
-                    <Typography color="error" variant="body2">
-                        {error}
-                    </Typography>
-                )}
-                <Box mt={2}>
-                    <Button type="submit" variant="contained" color="primary" fullWidth onClick={handleLogin}>
-                        Se connecter
-                    </Button>
-                </Box>
-                <Box mt={2}>
-                    <Button variant="text" color="primary" fullWidth onClick={switchToRegistration}>
-                        Créer un compte
-                    </Button>
-                </Box>
+
+                {/* Carte/boîte avec ombre pour contenir le formulaire */}
+                <Paper elevation={3} sx={{ p: 4, mt: 2, width: '100%', borderRadius: 2 }}>
+                    <Box
+                        component="form"
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            onSubmit()
+                        }}
+                    >
+                        {/* Champ Email */}
+                        <TextField
+                            name="email"
+                            label="Email"
+                            type="email"
+                            fullWidth
+                            margin="normal"
+                            value={form.email}
+                            onChange={onChange}
+                            autoFocus
+                            required
+                        />
+
+                        {/* Champ Mot de passe */}
+                        <TextField
+                            name="password"
+                            label="Mot de passe"
+                            type="password"
+                            fullWidth
+                            margin="normal"
+                            value={form.password}
+                            onChange={onChange}
+                            required
+                        />
+
+                        {/* Message d’erreur affiché sous les champs */}
+                        {error && (
+                            <Typography color="error" variant="body2" mt={1}>
+                                {error}
+                            </Typography>
+                        )}
+
+                        {/* Bouton pour se connecter */}
+                        <Box mt={2}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                sx={{ borderRadius: 2 }}
+                            >
+                                Se connecter
+                            </Button>
+                        </Box>
+
+                        {/* Lien vers l'inscription */}
+                        <Box mt={2}>
+                            <Button
+                                variant="text"
+                                color="primary"
+                                fullWidth
+                                onClick={onSwitchToRegister}
+                            >
+                                Créer un compte
+                            </Button>
+                        </Box>
+                    </Box>
+                </Paper>
             </Box>
         </Container>
     )
