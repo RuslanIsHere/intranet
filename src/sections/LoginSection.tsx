@@ -43,7 +43,7 @@ export const LoginSection = () => {
                 // Redirige vers la page d’accueil si tout va bien
                 router.push('/')
             } else {
-                setError('Не удалось получить сессию. Попробуйте снова.')
+                setError('Erreur dans la récupération de la session.')
             }
         }
     }

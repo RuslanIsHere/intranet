@@ -45,6 +45,7 @@ export const ProjectsSection = () => {
     };
 
     const handleSaveProject = async (project: Project) => {
+        // insertion du nouveau projet dans la table "projects"
         const { data, error } = await supabase
             .from('projects')
             .insert({
@@ -60,15 +61,15 @@ export const ProjectsSection = () => {
             })
             .select()
             .single()
-
+        // en cas d’erreur lors de l’insertion
         if (error) {
             console.error(error)
             setSnackbar({ open: true, message: 'Erreur lors de la création', severity: 'error' })
         } else if (data) {
-            setProjects((prev) => [...prev, data])
+            setProjects((prev) => [...prev, data]) // ajoute le nouveau projet à la fin de la liste existante
             setSnackbar({ open: true, message: 'Projet créé avec succès', severity: 'success' })
         }
-
+        // fermeture du modal une fois l’action terminée
         setModalOpen(false)
     }
 

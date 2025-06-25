@@ -13,7 +13,7 @@ import AppLoader from '@/components/AppLoader'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en">
+        <html lang="fr">
         <body>
         <UserProvider>
             <MainLayout>{children}</MainLayout>

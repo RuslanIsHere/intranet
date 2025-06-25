@@ -2,13 +2,12 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { getUserProfile } from '@/utils/hooks/getUserProfile'
-import type { Profile } from '@/types/database'; // Укажи верный путь
+import type { Profile } from '@/types/database';
 
 
 type UserContextType = {
     profile: Profile | null
     loading: boolean
-    setProfile?: React.Dispatch<React.SetStateAction<Profile | null>>
 }
 
 const UserContext = createContext<UserContextType>({
@@ -26,7 +25,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const fetch = async () => {
-            setLoading(true)
             const data = await getUserProfile()
             setProfile(data)
             setLoading(false)
@@ -37,7 +35,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     return (
-        <UserContext.Provider value={{ profile, loading, setProfile }}>
+        <UserContext.Provider value={{ profile, loading}}>
             {children}
         </UserContext.Provider>
 

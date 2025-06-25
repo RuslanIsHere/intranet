@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ProjectToolbar({ search, setSearch, onAdd }: Props) {
-    const { profile, loading } = useUserContext()
+    const { profile } = useUserContext()
 
     const isAdmin = profile?.roles?.includes('admin')
 
@@ -23,7 +23,7 @@ export default function ProjectToolbar({ search, setSearch, onAdd }: Props) {
                 onChange={(e) => setSearch(e.target.value)}
                 fullWidth
             />
-            {!loading && isAdmin && (
+            {isAdmin && (
                 <Button variant="contained" onClick={onAdd} startIcon={<AddIcon />}>
                     Ajouter
                 </Button>

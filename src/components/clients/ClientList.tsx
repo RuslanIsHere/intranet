@@ -83,7 +83,6 @@ export default function ClientList() {
             showSnackbar('Client supprimé avec succès', 'success')
             fetchClients()
         }
-
         setConfirmDelete(null)
     }
 
